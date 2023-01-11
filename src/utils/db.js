@@ -13,10 +13,10 @@ import knex from "knex";
 export default knex({
   client: "mysql2",
   connection: {
-    host: "bipcpqjke0vcw6ncfonx-mysql.services.clever-cloud.com",
+    host: "ba2gjnbjd92cg0aabbch-mysql.services.clever-cloud.com",
     port: 3306,
-    user: "uk7wqkkrtovbyi9u",
-    password: "cS6EvL06OuRboecgkAXa",
-    database: "bipcpqjke0vcw6ncfonx",
+    user: "uxofrgawfza3ggxo",
+    password: "w2fKD8f2fYxfyFhC7FfN",
+    database: "ba2gjnbjd92cg0aabbch",
   },
 });

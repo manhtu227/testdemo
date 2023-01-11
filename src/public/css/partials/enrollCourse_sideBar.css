@@ -14,13 +14,14 @@
   color: black;
   display: block;
   border: none;
+  border-radius: 0.5rem;
   width: 100%;
   text-align: left;
   cursor: pointer;
   outline: none; }
 
 .sidenav .current_lesson__name {
-  background-color: #14b8a6; }
+  background-color: #38bdf8; }
 
 /* On mouse-over */
 .sidenav a:hover, .dropdown-btn:hover {
@@ -65,6 +66,9 @@
   font-weight: bold;
   padding-top: 1rem;
   font-size: 1.8rem; }
+  @media only screen and (max-width: 31.25em) {
+    .formCourse_title {
+      width: 90%; } }
   .formCourse_title:hover {
     cursor: pointer;
     background-color: #d8d7dc;
@@ -104,7 +108,11 @@
 .chapter__title {
   padding-top: 1rem;
   font-weight: 700;
-  margin-left: 0.7rem; }
+  margin-left: 0.7rem;
+  border-radius: 0.5rem; }
+  @media only screen and (max-width: 31.25em) {
+    .chapter__title {
+      width: 10rem; } }
 
 .chapter__title:hover {
   cursor: pointer;
@@ -147,3 +155,7 @@
 
 .background-color {
   background-color: #d8d7dc; }
+
+@media only screen and (max-width: 31.25em) {
+  .sidenav {
+    width: 360px; } }

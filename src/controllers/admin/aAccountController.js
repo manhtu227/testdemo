@@ -1,8 +1,9 @@
 import userModel from "../../models/userModel.js";
-import sgMail from "@sendgrid/mail";
 import bcrypt from "bcryptjs";
 import accountModel from "../../models/accountModel.js";
-import sendMail from "../../middlewares/email.mdw.js";
+import sendMail from "../../utils/email.js";
+import courseModel from "../../models/courseModel.js";
+
 const getUser = async (id) => {
   let users;
   let isActive;
@@ -63,6 +64,7 @@ class AAccountController {
       email: req.body.email,
       permissionID: 3,
       img: "/images/teacherPicture/teacher.jpg",
+      isActive: 1,
     };
     let err_message_name, err_message_email;
     const check = (name, chec) => {
@@ -85,24 +87,18 @@ class AAccountController {
       check(nameTeacher?.name, teacher.name) === 1 &&
       check1(emailTeacher?.email, teacher.email) === 1
     ) {
-      const message = {
-        to: req.body.email,
-        from: {
-          name: "SUN LIGHT",
-          email: "manhtu2272002@gmail.com",
-        },
-        subject: `SEND ACCOUNT TEACHER`,
-        text: "and easy to do anywhere, even with Node.js",
-        html: `<div><strong>username:${req.body.name}</strong></div>
-               <div><strong>password:${randomPassword}</strong></div>`,
-      };
-      let emailSend = await sendMail(message);
+      sendMail(
+        req.body.email,
+        `SEND ACCOUNT TEACHER`,
+        `<div><strong>username:${req.body.name}</strong></div>
+       <div><strong>password:${randomPassword}</strong></div>`
+      );
       // emailSend.then(async (val) => {
       //   console.log('Email sent')
 
       // })
       await accountModel.add(teacher);
-      return res.redirect("back");
+      return res.redirect("/admin/listAccount");
     } else {
       const isAccount = true;
       return res.render("vwAdmin/accounts/addTeacher", {
@@ -137,6 +133,8 @@ class AAccountController {
       }
       return 1;
     };
+
+    // tìm name và email có tồn tại k
     const name = await accountModel.findByUsername(req.body.name);
     const email = await accountModel.findByEmail(req.body.email);
     if (
@@ -173,11 +171,21 @@ class AAccountController {
 
   async delete(req, res) {
     await userModel.delete(req.query.id);
+    await courseModel.deleteCourseOfStudent(req.query.id);
+    await courseModel.deleteCourseOfTeacher(req.query.id);
     res.redirect("back");
   }
   async deleteByCheckbox(req, res) {
-    for (const idAccounts of req.body.idAccounts) {
-      await userModel.delete(idAccounts);
+    if (Array.isArray(req.body.idAccounts)) {
+      for (const idAccounts of req.body.idAccounts) {
+        await userModel.delete(idAccounts);
+        await courseModel.deleteCourseOfStudent(idAccounts);
+        await courseModel.deleteCourseOfTeacher(idAccounts);
+      }
+    } else {
+      await userModel.delete(req.body.idAccounts);
+      await courseModel.deleteCourseOfStudent(req.body.idAccounts);
+      await courseModel.deleteCourseOfTeacher(req.body.idAccounts);
     }
     res.redirect("back");
   }

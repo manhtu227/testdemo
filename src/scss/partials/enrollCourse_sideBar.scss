@@ -16,13 +16,19 @@
   color: black;
   display: block;
   border: none;
+  border-radius: 0.5rem;
   width: 100%;
   text-align: left;
   cursor: pointer;
   outline: none;
 }
 .sidenav .current_lesson__name {
-  background-color: #14b8a6;
+  // background-color: #fee2e2;
+  // background-color: #86efac;
+  // background-color: #a5f3fc;
+  // background-color: #7dd3fc;
+  // background-color: #fda4af;
+  background-color: #38bdf8;
 }
 
 /* On mouse-over */
@@ -83,8 +89,12 @@
   
   .formCourse_title {
     font-weight: bold;
-      padding-top: 1rem;
+    padding-top: 1rem;
     font-size: 1.8rem;
+    @media only screen and (max-width: 31.25em){
+      width: 90%;
+    }
+    
   
     &:hover {
       cursor:pointer;
@@ -146,6 +156,10 @@
     padding-top: 1rem;
     font-weight:700;
     margin-left: 0.7rem;
+    border-radius: 0.5rem;
+    @media only screen and (max-width: 31.25em){
+      width: 10rem;
+    }
   }
   
   .chapter__title:hover {
@@ -205,4 +219,9 @@
     background-color: #d8d7dc;
   }
   
+  @media only screen and (max-width: 31.25em){
+    .sidenav{
+      width: 360px;
+    }
+}
   

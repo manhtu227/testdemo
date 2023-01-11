@@ -100,10 +100,10 @@ export default {
     const courseTeachers = await db("course_of_teacher").where("teacherID", id);
     const ids = [];
     courseTeachers.forEach((courseTeacher) => {
-      ids.push(courseTeacher.teacherID);
+      ids.push(courseTeacher.courseID);
     });
     return await db("course")
-      .select("id", "name", "blocked")
+      .select("id", "name")
       .whereIn("id", ids)
       .andWhere("blocked", 0);
   },
@@ -112,12 +112,12 @@ export default {
     const courseTeachers = await db("course_of_teacher").where("teacherID", id);
     const ids = [];
     courseTeachers.forEach((courseTeacher) => {
-      ids.push(courseTeacher.teacherID);
+      ids.push(courseTeacher.courseID);
     });
+    console.log(courseTeachers);
     return await db("course")
       .select("id", "name", "blocked")
-      .whereIn("id", ids)
-      .andWhere("blocked", 0);
+      .whereIn("id", ids);
   },
 
   async getSummaryByCategoryAndTeacherId(idCategory, idTeacher) {
@@ -127,10 +127,10 @@ export default {
     );
     const ids = [];
     courseTeachers.forEach((courseTeacher) => {
-      ids.push(courseTeacher.teacherID);
+      ids.push(courseTeacher.courseID);
     });
     return await db("course")
-      .select("id", "name", "blocked")
+      .select("id", "name")
       .whereIn("id", ids)
       .andWhere("id", idCategory)
       .andWhere("blocked", 0);
@@ -143,12 +143,12 @@ export default {
     );
     const ids = [];
     courseTeachers.forEach((courseTeacher) => {
-      ids.push(courseTeacher.teacherID);
+      ids.push(courseTeacher.courseID);
     });
     return await db("course")
       .select("id", "name", "blocked")
       .whereIn("id", ids)
-      .andWhere("id", idCategory);
+      .andWhere("idCategory", idCategory);
   },
 
   // Lượt bán nhiều nhất
@@ -172,6 +172,11 @@ export default {
       .where("blocked", 0)
       .orderBy("views", "DESC")
       .limit(limit);
+  },
+
+  // Các khóah học đã hoàn thành
+  getCompletedList() {
+    return db.select("id").table("course").where("status", 1);
   },
 
   //
@@ -237,6 +242,12 @@ export default {
   },
   deleteLesson(id) {
     return db("lesson").where("id", id).del();
+  },
+  deleteCourseOfStudent(id) {
+    return db("course_of_student").where("studentID", id).del();
+  },
+  deleteCourseOfTeacher(id) {
+    return db("course_of_teacher").where("teacherID", id).del();
   },
   async join(id) {
     const list = await db("lesson").where("id", id);
@@ -339,6 +350,8 @@ export default {
     return result;
   },
 
+  // async
+
   // star percent for chart rating
   async percent_star(id, numberStar) {
     const rateAll = await db.raw(
@@ -361,7 +374,31 @@ export default {
     return allFeedback;
   },
 
-  
+  async getNameUser(id) {
+    const name = await db("name").from("user").where("id", id);
+    return name[0].name;
+  },
+
+  async isEmptyCourse(id) {
+    const chapters = await db
+      .select("id")
+      .from("chapter")
+      .where("courseID", id);
+    if (chapters.length === 0) {
+      return true;
+    } else {
+      for (const chapter of chapters) {
+        const lesson = await db
+          .select("id")
+          .from("lesson")
+          .where("chapterID", chapter.id);
+        if (lesson.length !== 0) {
+          return false;
+        }
+      }
+    }
+    return true;
+  },
 
   // async getTimeOfFeedback(id){
   //   const time = await db
@@ -397,7 +434,6 @@ export default {
     return lessons;
   },
 
-  
   // id = lesson id
   async getLessonByID(id) {
     const lesson = await db("lesson").where("id", id);
@@ -406,7 +442,6 @@ export default {
 
   async updateView(id) {
     let [getView] = await db.select("views").from("course").where("id", id);
-    // console.log(getView.views);
     await db("course").where("id", id).update("views", ++getView.views);
   },
 

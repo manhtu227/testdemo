@@ -4,6 +4,7 @@ const mailformat =
   /^[a-z][a-z0-9_\.]{5,32}@[a-z0-9]{2,}(\.[a-z0-9]{2,4}){1,2}$/;
 const profileImageForm = document.forms["profileImageForm"];
 const passformat = /^[A-Za-z]\w{5,14}$/;
+const nameformat = /^[A-Z][a-zA-Z]{2,}(?: [A-Z][a-zA-Z]*){0,3}$/;
 
 submit.addEventListener("click", function (e) {
   if (input[2].value.length === 0) {
@@ -11,6 +12,11 @@ submit.addEventListener("click", function (e) {
     input[2].previousElementSibling.classList.remove("hidden");
     e.preventDefault();
   } else {
+    if (!input[0].value.match(nameformat) && input[0].value.length !== 0) {
+      input[0].style.border = "1px solid red";
+      input[0].previousElementSibling.classList.remove("hidden");
+      e.preventDefault();
+    }
     if (!input[1].value.match(mailformat) && input[1].value.length !== 0) {
       input[1].style.border = "1px solid red";
       input[1].previousElementSibling.classList.remove("hidden");
@@ -34,8 +40,26 @@ submit.addEventListener("click", function (e) {
       e.preventDefault();
     }
   }
+  if (input[0].value.length === 0) {
+    input[0].style.border = "1px solid red";
+    input[0].previousElementSibling.classList.remove("hidden");
+    e.preventDefault();
+  }
+  if (input[1].value.length === 0) {
+    input[1].style.border = "1px solid red";
+    input[1].previousElementSibling.classList.remove("hidden");
+    e.preventDefault();
+  }
 });
-
+input[0].oninput = () => {
+  if (!input[0].value.match(nameformat)) {
+    input[0].style.border = "1px solid red";
+    input[0].previousElementSibling.classList.remove("hidden");
+  } else {
+    input[0].style.border = "1px solid #000";
+    input[0].previousElementSibling.classList.add("hidden");
+  }
+};
 input[1].oninput = () => {
   if (!input[1].value.match(mailformat)) {
     input[1].style.border = "1px solid red";
@@ -88,7 +112,7 @@ deleteChapter?.addEventListener("click", function (e) {
 
 const deleteLessonForm = document.forms["deleteLessonForm"];
 const deleteLesson = document.querySelector(".deleteLesson");
-deleteLesson.addEventListener("click", function (e) {
+deleteLesson?.addEventListener("click", function (e) {
   id = deleteLesson.getAttribute("data-id");
   deleteLessonForm.action =
     "/teacher/course/lesson?id=" + id + "&_method=DELETE";
